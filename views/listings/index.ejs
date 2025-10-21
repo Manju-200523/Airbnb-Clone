@@ -1,0 +1,218 @@
+<% layout("/layouts/boilerplate") -%>
+<body>
+
+<style>
+    /* ---------- FILTERS SECTION ---------- */
+    #filters {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.2rem;
+        margin: 1rem auto;
+        padding: 1rem 1.5rem;
+        background: #f8f9fa;
+        border-radius: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        position: relative;
+    }
+
+    /* FILTER CONTAINER */
+    .filter-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1.5rem;
+        flex: 1;
+    }
+
+    .filter {
+        text-align: center;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+        padding: 0.5rem 0.8rem;
+        border-radius: 10px;
+        min-width: 80px;
+    }
+
+    .filter:hover {
+        opacity: 1;
+        cursor: pointer;
+        background: #e9ecef;
+        transform: translateY(-3px);
+    }
+
+    .filter i {
+        font-size: 1.4rem;
+        color: #007bff;
+    }
+
+    .filter p {
+        font-size: 0.85rem;
+        margin-top: 0.4rem;
+        font-weight: 500;
+    }
+
+    /* ---------- SWITCH FIXED ---------- */
+    .tax-switch {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex: 0 0 auto;
+        z-index: 10;
+        position: relative;
+    }
+
+    /* ✅ Bordered box for checkbox + label */
+    .tax-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        padding: 0.6rem 1rem;
+        border: 2px solid #dee2e6;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .tax-box label {
+        font-size: 0.9rem;
+        color: #333;
+        font-weight: 500;
+        user-select: none;
+    }
+
+    .tax-box .form-check-input {
+        width: 2.6rem;
+        height: 1.4rem;
+        cursor: pointer;
+    }
+
+    /* ---------- LISTINGS ---------- */
+    .listing-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .card {
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .card-body p {
+        margin-bottom: 0.3rem;
+        font-size: 0.95rem;
+    }
+
+    .tax-info {
+        display: none;
+    }
+
+    /* ---------- RESPONSIVENESS ---------- */
+    @media (max-width: 992px) {
+        #filters {
+            justify-content: flex-start;
+        }
+
+        .tax-switch {
+            flex-basis: 100%;
+            justify-content: flex-start;
+            margin-top: 0.7rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .filter i {
+            font-size: 1.2rem;
+        }
+
+        .filter p {
+            font-size: 0.75rem;
+        }
+
+        .card img {
+            height: 15rem !important;
+        }
+
+        .tax-box {
+            width: 100%;
+            justify-content: space-between;
+        }
+    }
+</style>
+
+<!-- ---------- FILTERS ---------- -->
+<div id="filters">
+    <div class="filter-container">
+        <div class="filter"><div><i class="fa-solid fa-fire"></i></div><p>Trending</p></div>
+        <div class="filter"><div><i class="fa-solid fa-bed"></i></div><p>Rooms</p></div>
+        <div class="filter"><div><i class="fa-solid fa-city"></i></div><p>Iconic Cities</p></div>
+        <div class="filter"><div><i class="fa-solid fa-mountain"></i></div><p>Mountains</p></div>
+        <div class="filter"><div><i class="fa-solid fa-igloo"></i></div><p>Castles</p></div>
+        <div class="filter"><div><i class="fa-solid fa-person-swimming"></i></div><p>Amazing Pools</p></div>
+        <div class="filter"><div><i class="fa-solid fa-spa"></i></div><p>Camping</p></div>
+        <div class="filter"><div><i class="fa-solid fa-wheat-awn"></i></div><p>Farms</p></div>
+        <div class="filter"><div><i class="fa-solid fa-hexagon-nodes-bolt"></i></div><p>Arctic</p></div>
+
+        <!-- ✅ Added 3 extra filters -->
+        <div class="filter"><div><i class="fa-solid fa-umbrella-beach"></i></div><p>Beachfront</p></div>
+        <div class="filter"><div><i class="fa-solid fa-gem"></i></div><p>Luxury</p></div>
+        <div class="filter"><div><i class="fa-solid fa-tree"></i></div><p>Countryside</p></div>
+    </div>
+
+    <!-- ✅ SWITCH inside bordered box -->
+    <div class="tax-switch">
+        <div class="tax-box">
+            <label for="switchCheckDefault">Display Total after taxes</label>
+            <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+        </div>
+    </div>
+</div>
+
+<!-- ---------- LISTINGS ---------- -->
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4 mt-1">
+    <% for (let listing of listings){ %>
+    <a href="listings/<%=listing._id%>" class="listing-link">
+        <div class="card col">
+            <img src="<%=listing.image.url%>" class="card-img-top" alt="listing_image" style="height:20rem; object-fit:cover;">
+            <div class="card-body">
+                <p class="card-text">
+                    <b><%=listing.title%></b><br>
+                    ₹<%= listing.price.toLocaleString("en-IN") %>/night
+                </p>
+                <i class="tax-info">&nbsp;&nbsp;+18% GST</i>
+            </div>
+        </div>
+    </a>
+    <% } %>
+</div>
+
+<!-- ---------- SCRIPT ---------- -->
+<script>
+    let taxSwitch = document.getElementById("switchCheckDefault");
+    taxSwitch.addEventListener("click", () => {
+        let taxInfo = document.getElementsByClassName("tax-info");
+        for (let info of taxInfo) {
+            if (info.style.display !== "inline") {
+                info.style.display = "inline";
+            } else {
+                info.style.display = "none";
+            }
+        }
+    });
+</script>
+
+</body>
