@@ -27,25 +27,32 @@ module.exports.showForm=async (req,res)=>{
     }
     res.render("listings/show.ejs",{listing});
 };
-
 module.exports.createListing = async (req, res) => {
     try {
-        console.log("Geocoding location:", req.body.listing.location);
-
-        const geoData = await geocoder.geocode(req.body.listing.location);
-
-        console.log("GeoData returned:", geoData);  // <--- check this
-
-        if (!geoData.length) {
-            req.flash("error", "Invalid location. Please enter a proper address.");
-            return res.redirect("/listings/new");
+        let geoData;
+        try {
+            geoData = await geocoder.geocode(req.body.listing.location);
+            console.log("GeoData returned:", geoData);
+        } catch (err) {
+            console.log("Geocoder failed, using fallback coordinates", err);
         }
 
         const newListing = new Listing(req.body.listing);
-        newListing.geometry = {
-            type: "Point",
-            coordinates: [geoData[0].longitude, geoData[0].latitude]
-        };
+
+        // Use geocoded coordinates if available, else fallback
+        if (geoData && geoData.length) {
+            newListing.geometry = {
+                type: "Point",
+                coordinates: [geoData[0].longitude, geoData[0].latitude]
+            };
+        } else {
+            // fallback: central coordinates (e.g., Bangalore)
+            newListing.geometry = {
+                type: "Point",
+                coordinates: [77.5946, 12.9716]
+            };
+        }
+
         newListing.owner = req.user._id;
 
         if (req.file) {
@@ -62,6 +69,7 @@ module.exports.createListing = async (req, res) => {
         res.redirect("/listings/new");
     }
 };
+
 
 module.exports.editListing=async(req,res)=>{ 
       
