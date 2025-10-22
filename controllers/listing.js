@@ -30,15 +30,17 @@ module.exports.showForm=async (req,res)=>{
 
 module.exports.createListing = async (req, res) => {
     try {
-        // 1️⃣ Geocode the address
+        console.log("Geocoding location:", req.body.listing.location);
+
         const geoData = await geocoder.geocode(req.body.listing.location);
+
+        console.log("GeoData returned:", geoData);  // <--- check this
 
         if (!geoData.length) {
             req.flash("error", "Invalid location. Please enter a proper address.");
             return res.redirect("/listings/new");
         }
 
-        // 2️⃣ Create listing
         const newListing = new Listing(req.body.listing);
         newListing.geometry = {
             type: "Point",
@@ -46,7 +48,6 @@ module.exports.createListing = async (req, res) => {
         };
         newListing.owner = req.user._id;
 
-        // 3️⃣ Add image if provided
         if (req.file) {
             newListing.image = { url: req.file.path, filename: req.file.filename };
         }
@@ -56,7 +57,7 @@ module.exports.createListing = async (req, res) => {
         res.redirect("/listings");
 
     } catch (err) {
-        console.log(err);
+        console.log("Error in createListing:", err);
         req.flash("error", "Something went wrong while creating the listing.");
         res.redirect("/listings/new");
     }
